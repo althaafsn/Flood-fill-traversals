@@ -12,9 +12,14 @@
  *
  * @param item - object to be added to the Queue.
  */
+
+#include "queue.h"
+
 template <class T>
 void Queue<T>::Enqueue(T const& item)
 {
+
+	stack_1.Push(item);
 	// complete your implementation below
 	
 }
@@ -31,10 +36,20 @@ void Queue<T>::Enqueue(T const& item)
 template <class T>
 T Queue<T>::Dequeue()
 {
-	// complete your implementation below
-  
-	T item;      // REPLACE THESE LINES
-	return item; // REPLACE THESE LINES
+	if(stack_2.Size() > 0){
+		T item = stack_2.Remove();
+		return item;
+	}
+	else{
+		unsigned long initCapacity = stack_1.Size();
+		for (unsigned long index = 0; index < initCapacity ; index++){
+			T currentObject = stack_1.Remove();
+			stack_2.Add(currentObject);
+		}
+		T item = stack_2.Remove();
+		return item;
+	}
+	
 }
 
 /**
@@ -45,6 +60,7 @@ T Queue<T>::Dequeue()
 template <class T>
 void Queue<T>::Add(const T& item)
 {
+	Enqueue(item);
 	// complete your implementation below
 	// Hint: this function should call a Queue
 	//  function to add the element to the Queue.
@@ -65,7 +81,7 @@ T Queue<T>::Remove()
 	// function to remove an element from the Queue and return it. You will
 	// need to replace the following lines.
   
-	T item;      // REPLACE THESE LINES
+	T item = Dequeue();      // REPLACE THESE LINES
 	return item; // REPLACE THESE LINES
 }
 
@@ -83,10 +99,20 @@ T Queue<T>::Remove()
 template <class T>
 T Queue<T>::Peek()
 {
-	// complete your implementation below
-  
-	T item;      // REPLACE THESE LINES
-	return item; // REPLACE THESE LINES
+	if(stack_2.Size() == 0){
+		unsigned long initSize = stack_1.Size();
+		for (unsigned long index = 0; index < initSize; index++){
+			T currentItem = stack_1.Remove();
+			stack_2.Add(currentItem);
+		}
+		T item = stack_2.Peek();
+		return item;
+		
+	}
+	else{
+		T item = stack_2.Peek();
+		return item;
+	}
 }
 
 /*
@@ -100,7 +126,10 @@ T Queue<T>::Peek()
 template <class T>
 bool Queue<T>::IsEmpty() const
 {
-	// complete your implementation below
-  
-	return true; // REPLACE THIS STUB
+	if( (stack_1.Size() + stack_2.Size() ) > 0){
+		return false;
+	}
+	else{
+		return true;
+	}
 }

@@ -11,7 +11,8 @@
 QuarterColorPicker::QuarterColorPicker(PNG& inputimg, unsigned char b_amount)
 {
     // Complete your implementation below
-	
+	referenceimg = inputimg;
+    brightamount = b_amount;
 }
 
 /**
@@ -33,7 +34,26 @@ QuarterColorPicker::QuarterColorPicker(PNG& inputimg, unsigned char b_amount)
 RGBAPixel QuarterColorPicker::operator()(PixelPoint p)
 {
     // Replace the line below with your implementation
-    return RGBAPixel();
+    // return RGBAPixel();
+
+    RGBAPixel result;
+    unsigned char avg_red;
+    unsigned char avg_green;
+    unsigned char avg_blue;
+    unsigned char avg_alpha;
+
+    RGBAPixel *top_left = referenceimg.getPixel(((p.x * 2) % referenceimg.width()), ((p.y * 2) % referenceimg.height()));
+    RGBAPixel *top_right = referenceimg.getPixel(((p.x * 2) % referenceimg.width()) + 1, ((p.y * 2) % referenceimg.height()));
+    RGBAPixel *bot_left = referenceimg.getPixel(((p.x * 2)% referenceimg.width()), ((p.y * 2) % referenceimg.height()) + 1);
+    RGBAPixel *bot_right = referenceimg.getPixel(((p.x * 2) % referenceimg.width()) + 1, ((p.y * 2) % referenceimg.height()) + 1);
+    avg_red = (top_left->r + top_right->r + bot_left->r + bot_right->r) / 4;
+    avg_green = (top_left->g + top_right->g + bot_left->g + bot_right->g) / 4;
+    avg_blue = (top_left->b + top_right->b + bot_left->b + bot_right->b) / 4;
+    avg_alpha = (top_left->a + top_right->a + bot_left->a + bot_right->a) / 4;
+    
+    result = RGBAPixel(min(avg_red + brightamount, 255), min(avg_green + brightamount, 255), min(avg_blue + brightamount, 255), avg_alpha);
+    return result;
+
 }
 
 /**

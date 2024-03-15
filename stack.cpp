@@ -10,9 +10,17 @@
  * and allocate any required memory. The initial size of `items` should
  * be DEFAULTCAPACITY defined in stack.h.
  */
+
+#include <iostream>
+#include "stack.h"
+
+using namespace std;
 template <class T>
 Stack<T>::Stack()
 {
+	items = (T *) malloc(sizeof(T));
+	num_items = 0;
+	max_items = 1;
 	// complete your implementation below
 	
 }
@@ -24,6 +32,8 @@ template <class T>
 Stack<T>::~Stack()
 {
 	// complete your implementation below
+	free(items);
+	items = nullptr;
 	
 }
 
@@ -39,8 +49,33 @@ Stack<T>::~Stack()
  */
 template <class T>
 void Stack<T>::Push(const T& item) {
+
+	if(num_items < max_items){
+		{
+			cout << "current stack : ";
+			for(int check = 0; check < (int) num_items; check++){
+				cout << items[check] << " ";
+			}
+			cout << " " << endl;
+		}
+
+		items[num_items] = item;
+		num_items = num_items + 1;
+
+		{
+			cout << "current stack : ";
+			for(int check = 0; check < (int) num_items; check++){
+				cout << items[check] << " ";
+			}
+			cout << " " << endl;
+			cout << " " << endl;
+		}
+	}
+	else{
+		Resize(2 * max_items);
+		Push(item);
+	}
 	// complete your implementation below
-	
 }
 
 /**
@@ -56,9 +91,16 @@ void Stack<T>::Push(const T& item) {
 template <class T>
 T Stack<T>::Pop() {
 	// complete your implementation below
-  
-	T item;      // REPLACE THESE LINES
-	return item; // REPLACE THESE LINES
+	
+	T outcome = items[num_items - 1];
+	items[num_items - 1] = (T) NULL;
+	num_items--;
+
+	if( (num_items) < 0.25 * max_items){
+		Resize( (max_items / 2) );
+	}
+    // REPLACE THESE LINES
+	return outcome; // REPLACE THESE LINES
 }
 
 /**
@@ -68,11 +110,11 @@ T Stack<T>::Pop() {
 template <class T>
 void Stack<T>::Add(const T& item)
 {
+	Push(item);
 	// complete your implementation below
 	// Hint: this should call another Stack function
 	//   to add the element to the Stack.
 
-	
 }
 
 /**
@@ -88,7 +130,7 @@ T Stack<T>::Remove()
 	// Hint: this should call another Stack function
 	//   to remove an element from the Stack and return it.
   
-	T item;      // REPLACE THESE LINES
+	T item = Pop();      // REPLACE THESE LINES
 	return item; // REPLACE THESE LINES
 }
 
@@ -104,7 +146,7 @@ template <class T>
 T Stack<T>::Peek() {
 	// complete your implementation below
   
-	T item;      // REPLACE THESE LINES
+	T item = items[num_items - 1];      // REPLACE THESE LINES
 	return item; // REPLACE THESE LINES
 }
 
@@ -116,8 +158,9 @@ T Stack<T>::Peek() {
 template <class T>
 bool Stack<T>::IsEmpty() const {
 	// complete your implementation below
+
   
-	return true; // REPLACE THIS STUB
+	return (num_items == 0x0); // REPLACE THIS STUB
 }
 
 /**
@@ -131,8 +174,8 @@ bool Stack<T>::IsEmpty() const {
 template <class T>
 size_t Stack<T>::Capacity() const {
 	// complete your implementation below
-  
-	return 0; // REPLACE THIS STUB
+	
+	return max_items; // REPLACE THIS STUB
 }
 
 /**
@@ -141,9 +184,10 @@ size_t Stack<T>::Capacity() const {
  */
 template <class T>
 size_t Stack<T>::Size() const {
+
 	// complete your implementation below
   
-	return 0; // REPLACE THIS STUB
+	return num_items; // REPLACE THIS STUB
 }
 
 /**
@@ -155,6 +199,31 @@ size_t Stack<T>::Size() const {
  */
 template <class T>
 void Stack<T>::Resize(size_t n) {
+
+
+	T* newOutcome = (T *) malloc(n * sizeof(T));
+
+	int ittConst;
+	if( n > num_items){
+		ittConst = (int) num_items;
+	}
+	else{
+		ittConst = (int) n;
+	}
+
+	for (int indexCopy = 0; indexCopy < ittConst; indexCopy++){
+		newOutcome[indexCopy] = items[indexCopy];
+	}
+
+	max_items = n;
+
+	if(num_items > n){
+		num_items = n;
+	}
+
+	T* deletedHeap = items;
+	items = newOutcome;
+	free(deletedHeap);
+	deletedHeap = nullptr;
 	// complete your implementation below
-	
 }
